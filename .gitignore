@@ -10,6 +10,7 @@ server/dist/
 server/build/
 server/.env
 server/.env.*
+server/server.key
 
 # Logs
 *.log
