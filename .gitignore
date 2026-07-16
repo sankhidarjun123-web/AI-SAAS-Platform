@@ -1,0 +1,30 @@
+# Client
+client/node_modules/
+client/dist/
+client/.env
+client/.env.*
+
+# Server
+server/node_modules/
+server/dist/
+server/build/
+server/.env
+server/.env.*
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Cache
+.cache/

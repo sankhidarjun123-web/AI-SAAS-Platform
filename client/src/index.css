@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  scrollbar-color: #000000 #ffffff; /* format: thumb (black) track (white) */
+}
+
+html::-webkit-scrollbar {
+  width: 16px; /* Width of the entire vertical scrollbar */
+  height: 16px; /* Height of the entire horizontal scrollbar */
+}
+
+html::-webkit-scrollbar-track {
+  background: #000000 #ffffff; /* White background for the track */
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #000000; /* Black scroller thumb */
+  border-radius: 4px; /* Optional: rounds the edges of the scroller */
+  border: 3px solid #ffffff; /* Optional: adds a white gap around the scroller */
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #F5F2EA;
+  color: #000000;
+}
+
+.dark body {
+  background-color: #0F172A;
+  color: #ffffff; /* White background for the track */
+
+}
+
+/*visibility changing animation for different elements*/
+.sudden-appear {
+  transition-property: all;
+  transition-duration: 1.5s;
+  transition-timing-function: ease-out;
+}
+
+.showing {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.not-showing {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+
+/* common colored button properties in the app */
+.common-btn {
+    background: linear-gradient(
+        to bottom,
+        #facc15,
+        #eab308,
+        #ca8a04
+    );
+
+    border: 1px solid rgba(253, 224, 71, 0.8);
+
+    transition: all 150ms ease-out;
+
+    cursor: pointer;
+}
+
+/* Hover */
+
+.common-btn:hover {
+    background: linear-gradient(
+        to bottom,
+        #fde047,
+        #facc15,
+        #eab308
+    );
+
+    border-color: #fef08a;
+
+    box-shadow: 0 0 10px rgba(253, 224, 71, 0.65);
+}
+
+/* Active / Clicked */
+
+.common-btn:active {
+    background: linear-gradient(
+        to bottom,
+        #fef08a,
+        #fde047,
+        #facc15
+    );
+
+    border-color: #fef9c3;
+
+    box-shadow: 0 0 14px rgba(253, 224, 71, 0.9);
+
+    transform: scale(0.97);
+}
+
+
+.light-btn {
+    background: #FFFCF7;
+    color: #2A241F;
+
+    border: 1px solid #D6CFC4;
+
+    /* Permanent glow */
+    box-shadow:
+        0 0 8px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 248, 220, 0.4);
+
+    transition: all 0.2s ease;
+}
+
+.light-btn:hover {
+    box-shadow:
+        0 0 12px rgba(255, 255, 255, 1),
+        0 0 30px rgba(255, 248, 220, 0.6);
+
+    transform: translateY(-1px);
+}
+
+.light-btn:active {
+    transform: scale(0.98);
+
+    box-shadow:
+        0 0 6px rgba(255, 255, 255, 0.7),
+        0 0 15px rgba(255, 248, 220, 0.3);
+}
