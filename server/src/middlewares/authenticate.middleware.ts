@@ -32,6 +32,8 @@ export async function authenticate(
         }
 
         else req.userId = result.rows[0].id;
+
+        req.clerkId = userId;
         next();
     } catch (err) {
         console.error(err);

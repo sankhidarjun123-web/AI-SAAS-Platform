@@ -12,7 +12,17 @@ const publishKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <BrowserRouter>
-      <ClerkProvider publishableKey={publishKey}>
+      <ClerkProvider publishableKey={publishKey}
+        appearance={{
+          cssLayerName: "clerk",
+
+          variables: {
+            colorPrimary: "#f59e0b",
+            colorForeground: "#0f172a",
+            colorBackground: "#ffffff",
+          },
+        }}
+      >
         <AuthProvider>
           <App />
         </AuthProvider>

@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef, type Dispatch, type SetStateAction } from "react";
+import { PanelLeft, Search, SquarePen, MessageCircle, Circle } from "lucide-react";
 import { getConversations } from "../../../api/chat.api";
 import { usePaginationFetch } from "../../../hooks/usePaginationFetch";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from '@clerk/clerk-react';
 import HistoryItem from '../../../components/Career-Mentor/HistoryItem';
 import CommonLoader from '../../../ui/loader/CommonLoader';
+import { motion } from "framer-motion";
 
 interface SidebarProps {
-  currentChat: string,
-  setCurrentChat: Dispatch<SetStateAction<string>>;
+  currentChat: string | undefined,
 }
 
 type Conversation = {
@@ -18,39 +19,80 @@ type Conversation = {
   updated_at: string;
 };
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentChat, setCurrentChat }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentChat }) => {
 
   const { getToken } = useAuth();
 
+  const [expanded, setExpanded] = useState<boolean>(() => {
+    const saved = localStorage.getItem("careerMentorSidebar");
 
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const navigate = useNavigate();
 
   const loaderRef = useRef(null);
 
   const { data: conversations, setData: setConversations, loading: conLoading, limitReached } = usePaginationFetch<Conversation, any>({ limit: 10, skip: 0, sort: "asc", divRef: loaderRef }, getConversations, "conversations", (skip, limit) => [getToken, skip, limit]);
 
+  useEffect(() => {
+    localStorage.setItem(
+      "careerMentorSidebar",
+      JSON.stringify(expanded)
+    );
+  }, [expanded]);
+
   return (
-    <aside className="w-64 border-r border-gray-200 dark:border-slate-700 flex flex-col p-4 bg-white dark:bg-[#0F172A]">
-      <div className="mb-6">
-        <h2 className="font-semibold text-lg text-black dark:text-white">Career Mentor</h2>
+    <motion.aside
+      onClick={() => {
+        if (expanded) return;
+        setExpanded(true);
+      }}
+      initial={false}
+      animate={{
+        width: expanded ? 256 : 40,
+      }}
+      transition={{
+        duration: 0.25,
+        ease: "easeInOut",
+      }}
+      className={`${expanded ? "w-64" : "w-10"} border-r border-gray-200 dark:border-slate-700 flex flex-col p-4 bg-white dark:bg-[#0F172A]`}>
+      <div className={`mb-6 flex items-center ${!expanded && "flex-col-reverse gap-6"} justify-between`}>
+        <h2 className={`${!expanded && "hidden"} font-semibold text-lg text-black dark:text-white`}>Career Mentor</h2>
+
+        <button onClick={(e) => e.stopPropagation()} type="button" className={`${expanded && "hidden"} cursor-pointer`}>
+          <MessageCircle />
+        </button>
+
+        <Link onClick={(e) => e.stopPropagation()} to="/career-mentor" type="button" className={`${expanded && "hidden"} cursor-pointer`}>
+          <SquarePen />
+        </Link>
+
+        <button onClick={(e) => e.stopPropagation()} type="button" className="cursor-pointer">
+          <Search />
+        </button>
+
+        <button onClick={(e) => { e.stopPropagation(); setExpanded(prev => !prev) }} type="button" className="cursor-ew-resize">
+          <PanelLeft />
+        </button>
       </div>
 
-      <button
-        onClick={() => navigate("/career-mentor")}
-        className="cursor-pointer w-full py-2 px-4 mb-6 bg-black dark:bg-white text-white dark:text-black rounded-md text-sm font-medium hover:opacity-90 transition-opacity">
+      <Link
+        to="/career-mentor"
+        className={`${expanded ? "flex gap-2 items-center" : "hidden"} cursor-pointer w-full py-2 px-4 mb-6 bg-black dark:bg-white text-white dark:text-black rounded-md text-sm font-medium hover:opacity-90 transition-opacity`}>
+        <SquarePen />
         New Chat
-      </button>
+      </Link>
 
-      <div className="flex-1 overflow-y-auto space-y-6">
+      <div className={`${!expanded && "hidden"} flex-1 overflow-y-auto space-y-6`}>
         {/* History sections would map through data here */}
         <div>
           <h3 className="text-xs font-bold text-gray-400 uppercase mb-2">Chats</h3>
 
           {
             conversations.map((conv, _) => (
-              <div key={conv?.id}>
-                <HistoryItem chatId={conv?.id} name={conv?.name || "New Chat"} setCurrentChat={setCurrentChat} currentChat={currentChat} />
-              </div>
+              <Link to={`/career-mentor/${conv?.id}`} key={conv?.id}>
+                <HistoryItem chatId={conv?.id} name={conv?.name || "New Chat"} currentChat={currentChat || ''} />
+              </Link>
             ))
           }
 
@@ -63,6 +105,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentChat, setCurrentChat })
           </div>
         </div>
       </div>
-    </aside>
+    </motion.aside>
   );
 };

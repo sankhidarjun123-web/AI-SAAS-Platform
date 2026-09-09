@@ -1,92 +1,184 @@
 import pool from "../connection.js";
 import type { Request, Response } from "express";
 import { askGemini } from "../services/chat.service.js";
+import { ai } from "../services/gemini.service.js";
+import { fileURLToPath } from "url";
+import { readFile } from "fs/promises";
+import path from "path";
+
+
+export const createChat = async (req: Request, res: Response) => {
+
+    try {
+
+        const userId = req.userId;
+        const { msg } = req.body;
+
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        const namePrompt = await readFile(
+            path.join(__dirname, "../../config/namePrompt.txt"),
+            "utf8"
+        )
+
+        if (!userId) {
+            return res.status(200).json({
+                success: true,
+                chatId: null,
+                persisted: false,
+                reason: "AUTH_REQUIRED"
+            });
+        }
+
+        const chatId = await pool.query(`
+        INSERT INTO chats (user_id)
+        VALUES ($1)
+        RETURNING id
+            `, [
+            userId
+        ]);
+
+        let name: string | null = null;
+
+        const nameQuery = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            config: {
+                temperature: 0.2,
+                systemInstruction: namePrompt,
+            },
+            contents: `
+        Generate a short title for this conversation.
+        
+        Rules:
+        - 2-6 words.
+        - Summarize the main topic.
+        - No quotes.
+        - No punctuation at the end.
+        - Return ONLY the title.
+        - If the message is empty or contains no meaningful content, return exactly: null
+        
+        Message:
+        ${msg}
+                        `,
+        });
+
+        name = nameQuery?.text?.trim() || null;
+
+        if (name) {
+            await pool.query(
+                `
+        UPDATE chats
+        SET name = $1
+        WHERE id = $2
+        `,
+                [
+                    name,
+                    chatId.rows[0].id,
+                ]
+            );
+        }
+
+        res.status(200).json({
+            success: true,
+            chatId: chatId.rows[0].id,
+            persisted: true,
+            name: name || "New Chat"
+        });
+    } catch (err) {
+
+        console.error(err);
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+    }
+}
 
 export const sendPrompt = async (req: Request, res: Response) => {
     try {
-
-        const userId = req.userId!;
-
         const { msg } = req.body;
+        const chatId = req?.params?.chatId as string | undefined;
+        
+        if (!msg) {
+            return res.status(400).json({
+                message: "Message is required",
+            });
+        }
 
-        let chatId = null;
+        /*
+         * ==========================================
+         * GUEST / NO CHAT ID
+         * ==========================================
+         *
+         * The user can still use the AI, but their
+         * conversation is not persisted.
+         */
+        if (!chatId) {
+            const response = await askGemini(msg, null);
 
-        const { chatId: chatIdFromBody } = req.body;
+            return res.status(200).json({
+                aiResponse: response?.text?.trim(),
+                chatId: null,
+                persisted: false,
+            });
+        }
 
-        // option 1: The user is authenticated in that case if the does not exists
-        // it is created and the message is also stored both the user and the model
-        // for later retrieval and usage
-        if (userId) {
+        /*
+         * ==========================================
+         * EXISTING CHAT
+         * ==========================================
+         */
 
-            if (!chatIdFromBody) {
-                const chat = await pool.query(
-                    `
-                    INSERT INTO chats (user_id)
-                    VALUES ($1)
-                    RETURNING *
-                    `,
-                    [userId]
-                );
-
-                chatId = chat.rows[0].id;
-            } else {
-                chatId = chatIdFromBody;
-            }
-
-            const message = await pool.query(
-                `
+        // Store user's message
+        await pool.query(
+            `
             INSERT INTO messages (chat_id, content, role)
             VALUES ($1, $2, $3)
             RETURNING *
             `,
-                [
-                    chatId,
-                    msg,
-                    "user",
-                ]
-            );
-        }
+            [
+                chatId,
+                msg,
+                "user",
+            ]
+        );
 
-        const { response, name } = await askGemini(msg, chatId);   // sending the google gemini the prompt
+        // Send prompt to Gemini
+        const response = await askGemini(msg, chatId);
 
-        if(name) {
-            await pool.query(
-                `
-                UPDATE chats
-                SET name = $1
-                WHERE id = $2
-                `,
-                [
-                    name,
-                    chatId
-                ]
-            )
-        }
+        // Store Gemini response
+        await pool.query(
+            `
+            INSERT INTO messages (chat_id, content, role)
+            VALUES ($1, $2, $3)
+            `,
+            [
+                chatId,
+                response?.text?.trim(),
+                "model",
+            ]
+        );
 
-        if (userId) {
-            await pool.query(
-                `
-                INSERT INTO messages (chat_id, content, role)
-                VALUES ($1, $2, $3)
-                `,
-                [
-                    chatId,
-                    response?.text?.trim(),
-                    "model",
-                ]
-            );
-        }
-
-        // option 2: The user is unauthenticated the reply of the prompt is still generated but not
-        // stored in the database in any form
         return res.status(201).json({
             aiResponse: response?.text?.trim(),
+            chatId,
+            persisted: true,
         });
-    } catch (err) {
-        res.status(500).json({ message: "Internal Server Error" });
+
+    } catch (err: any) {
         console.error(err);
+
+        if (err?.status === 429) {
+            return res.status(429).json({
+                message: "AI service quota exceeded. Please try again later.",
+            });
+        }
+
+        return res.status(500).json({
+            message: "Internal Server Error",
+        });
     }
-}
+};
 
 
 export const getConversation = async (req: Request, res: Response) => {
@@ -129,6 +221,7 @@ export const getConversation = async (req: Request, res: Response) => {
             pool.query(`
             SELECT * FROM messages
             WHERE chat_id = $1
+            ORDER BY created_at DESC
             LIMIT $2
             OFFSET $3
         `, [
@@ -139,15 +232,21 @@ export const getConversation = async (req: Request, res: Response) => {
 
         const total = Number(countResult.rows[0].count);
         const retrieved = messagesResult.rowCount || 0;
+        const nextSkip = SKIP + retrieved;
 
         res.status(200).json({
             message: "Success",
-            conversationMessages: messagesResult.rows,
-            nextSkip: SKIP + LIMIT,
-            limitReached: total <= LIMIT + retrieved
-        })
+            conversationMessages: messagesResult.rows.map((msg) => ({
+                ...msg,
+                newMessage: false,
+            })),
+            nextSkip,
+            limitReached: nextSkip >= total,
+        });
 
     } catch (err) {
+
+        console.error(err);
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
@@ -176,6 +275,7 @@ export const getConversations = async (req: Request, res: Response) => {
             pool.query(
                 `SELECT * FROM chats
                  WHERE user_id = $1
+                 ORDER BY created_at DESC
                  LIMIT $2
                  OFFSET $3
             `, [

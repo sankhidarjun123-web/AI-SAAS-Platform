@@ -37,7 +37,8 @@ export const usePaginationFetch = <TData, T extends FetchFunction>(fetchParams: 
             const response = await fetchFunction(...args(skipRef.current, fetchParams.limit));
             setData(prev => [...prev, ...response[dataVal]]);
             skipRef.current = response.nextSkip || 0;
-            setLimitReached(response.limitReached);
+            setLimitReached(response.limitReached || response[dataVal].length === 0);
+            console.log(response[dataVal]);
         } catch (err) {
             console.error(err);
         } finally {
@@ -46,14 +47,12 @@ export const usePaginationFetch = <TData, T extends FetchFunction>(fetchParams: 
         }
     }
 
-    const resetData = async () => {
-
+    const resetData = () => {
         setData([]);
         setLimitReached(false);
         skipRef.current = fetchParams.skip;
         setLoading(false);
         loadingRef.current = false;
-        await fetchData();
     }
 
     useEffect(() => {
@@ -79,7 +78,7 @@ export const usePaginationFetch = <TData, T extends FetchFunction>(fetchParams: 
         observer.observe(target);
 
         return () => observer.disconnect();
-    }, [limitReached, data.length]);
+    }, [limitReached, data.length, loadingRef.current]);
 
     return { data, setData, loading, fetchData, skipRef, limitReached: limitReached, resetData };
 

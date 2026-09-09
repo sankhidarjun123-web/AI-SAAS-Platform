@@ -5,19 +5,17 @@ interface HistoryItemProps {
     name: string;
     chatId: string;
     currentChat: string;
-    setCurrentChat: Dispatch<SetStateAction<string>>;
 }
 
 const HistoryItem: React.FC<HistoryItemProps> = ({
     name,
     chatId,
-    currentChat,
-    setCurrentChat,
+    currentChat
 }) => {
     const isActive = currentChat === chatId;
 
     return (
-        <div onClick={() => setCurrentChat(chatId)} className="group relative w-full">
+        <div className="group relative w-full">
             <div
                 className={`cursor-pointer w-full flex items-center justify-between rounded-xl px-3 py-2 transition-all duration-200
                     ${

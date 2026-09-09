@@ -2,4 +2,8 @@ interface MessageProps {
     message: string;
 }
 
-export type { MessageProps };
+interface ReplyType {
+    newMessage: boolean;
+}
+
+export type { MessageProps, ReplyType};

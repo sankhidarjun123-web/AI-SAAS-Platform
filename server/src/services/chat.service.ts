@@ -30,14 +30,7 @@ export const askGemini = async (message: string, chat_id: string | null = null) 
             "utf8"
         );
 
-        const namePrompt = await readFile(
-            path.join(__dirname, "../../config/namePrompt.txt"),
-            "utf8"
-        )
-
         let content: Content[] = [];
-
-        let name: string | null = null;
 
         // option 1: the user has a token the history is saved in the database
         if (chat_id) {
@@ -59,30 +52,6 @@ export const askGemini = async (message: string, chat_id: string | null = null) 
                 }
             });
 
-            const nameQuery = await ai.models.generateContent({
-                model: "gemini-2.5-flash",
-                config: {
-                    temperature: 0.2,
-                    systemInstruction: namePrompt,
-                },
-                contents: `
-Generate a short title for this conversation.
-
-Rules:
-- 2-6 words.
-- Summarize the main topic.
-- No quotes.
-- No punctuation at the end.
-- Return ONLY the title.
-- If the message is empty or contains no meaningful content, return exactly: null
-
-Message:
-${message}
-                `,
-            });
-
-            name = nameQuery?.text?.trim() || null;
-
         }
         // option 2: the user is unauthenticated in that case there is no
         // past chat history to send along
@@ -103,7 +72,7 @@ ${message}
             contents: content,
         });
 
-        return { response, name };
+        return response;
     } catch (err) {
         throw err;
     }

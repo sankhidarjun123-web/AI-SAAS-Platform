@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 setAccountData(data?.account);
             } catch (err) {
                 setIsAuthenticated(false);
+                console.error(err);
             } finally {
                 setIsLoading(false);
             }

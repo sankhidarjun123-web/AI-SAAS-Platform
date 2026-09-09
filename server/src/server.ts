@@ -5,7 +5,12 @@ import express from "express";
 import cors from "cors";
 import authApi from "./routes/auth.route.js";
 import chatApi from "./routes/chat.route.js";
+import resumeApi from "./routes/resume.route.js";
+import interviewApi from "./routes/interview.route.js";
+import checkSubscription from "./middlewares/billing.middleware.js";
 import { clerkMiddleware } from '@clerk/express'
+import { authenticate } from "./middlewares/authenticate.middleware.js";
+
 
 const app = express();
 const server = http.createServer(app);
@@ -22,9 +27,19 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(clerkMiddleware());
 
+app.get("/api/health", (_req, res) => {
+    res.status(200).json({
+        status: "ok",
+    });
+});
+
 app.use("/auth", authApi);
 
 app.use("/chat", chatApi);
+
+app.use("/resume", authenticate, resumeApi);
+
+app.use("/interview", authenticate, checkSubscription, interviewApi);
 
 
 server.listen(PORT, () => {

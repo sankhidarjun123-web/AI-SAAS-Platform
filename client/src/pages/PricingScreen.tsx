@@ -1,32 +1,215 @@
 import { PricingTable } from "@clerk/clerk-react";
 
 export default function PricingScreen() {
-  return (
-    <main className="relative min-h-screen overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute left-20 top-24 h-96 w-96 rounded-full bg-violet-500/20 blur-[140px]" />
-        <div className="absolute right-20 bottom-24 h-96 w-96 rounded-full bg-cyan-500/20 blur-[140px]" />
-      </div>
+    return (
+        <main
+            className="
+                relative
+                min-h-screen
+                overflow-hidden
 
-      <section className="mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center px-6 py-24">
-        <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-1 text-sm font-medium text-violet-300">
-          Pricing
-        </span>
+                bg-slate-50
+                dark:bg-slate-950
 
-        <h1 className="mt-6 text-center text-5xl font-black md:text-6xl">
-          Invest in Your Career
-        </h1>
+                text-slate-900
+                dark:text-slate-100
 
-        <p className="mt-5 max-w-3xl text-center text-lg leading-8 text-zinc-400">
-          Whether you're preparing your first resume or practicing interviews,
-          Real Mentor AI gives you everything you need to land your dream job.
-        </p>
+                transition-colors
+                duration-300
+            "
+        >
 
-        <div className="mt-16 w-full max-w-6xl rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-zinc-300/70 dark:bg-zinc-900/70 p-8 shadow-[0_20px_80px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-          <PricingTable />
-        </div>
-      </section>
-    </main>
-  );
+            {/* =====================================================
+                BACKGROUND AMBIENT GRADIENT
+            ====================================================== */}
+
+            <div
+                className="
+                    pointer-events-none
+                    absolute
+                    inset-0
+                    -z-10
+                    overflow-hidden
+                "
+            >
+
+                {/* Center glow */}
+                <div
+                    className="
+                        absolute
+                        left-1/2
+                        top-1/2
+
+                        h-[600px]
+                        w-[600px]
+
+                        -translate-x-1/2
+                        -translate-y-1/2
+
+                        rounded-full
+
+                        bg-gradient-to-br
+                        from-amber-300/15
+                        via-orange-300/10
+                        to-yellow-300/10
+
+                        dark:from-amber-500/10
+                        dark:via-orange-500/5
+                        dark:to-yellow-500/5
+
+                        blur-[140px]
+                    "
+                />
+
+                {/* Top-left glow */}
+                <div
+                    className="
+                        absolute
+                        -left-40
+                        -top-40
+
+                        h-96
+                        w-96
+
+                        rounded-full
+
+                        bg-amber-300/10
+                        dark:bg-amber-500/5
+
+                        blur-[100px]
+                    "
+                />
+
+                {/* Bottom-right glow */}
+                <div
+                    className="
+                        absolute
+                        -bottom-40
+                        -right-40
+
+                        h-96
+                        w-96
+
+                        rounded-full
+
+                        bg-orange-300/10
+                        dark:bg-orange-500/5
+
+                        blur-[100px]
+                    "
+                />
+
+            </div>
+
+
+            {/* =====================================================
+                MAIN CONTENT
+            ====================================================== */}
+
+            <section
+                className="
+                    mx-auto
+
+                    flex
+                    min-h-screen
+                    max-w-5xl
+
+                    flex-col
+                    items-center
+                    justify-center
+
+                    px-4
+                    py-20
+                    sm:px-6
+                    lg:px-8
+                "
+            >
+
+                {/* Badge */}
+
+                <span
+                    className="
+                        rounded-full
+
+                        border
+                        border-amber-300
+                        dark:border-amber-500/30
+
+                        bg-amber-50
+                        dark:bg-amber-500/10
+
+                        px-4
+                        py-1.5
+
+                        text-xs
+                        font-bold
+                        uppercase
+                        tracking-wider
+
+                        text-amber-700
+                        dark:text-amber-300
+
+                        backdrop-blur-md
+                    "
+                >
+                    Simple Plans
+                </span>
+
+
+                {/* Heading */}
+
+                <h1
+                    className="
+                        mt-5
+
+                        text-center
+
+                        text-4xl
+                        sm:text-5xl
+
+                        font-extrabold
+                        tracking-tight
+
+                        text-slate-900
+                        dark:text-white
+                    "
+                >
+                    Invest in Your Career
+                </h1>
+
+
+                {/* Description */}
+
+                <p
+                    className="
+                        mt-4
+
+                        max-w-lg
+
+                        text-center
+
+                        text-sm
+                        sm:text-base
+
+                        leading-7
+
+                        text-slate-600
+                        dark:text-slate-400
+                    "
+                >
+                    Choose the plan that fits your goals and unlock
+                    powerful AI tools to accelerate your career.
+                </p>
+
+
+                {/* Pricing */}
+
+                <div className="mt-12 w-full">
+                    <PricingTable />
+                </div>
+
+            </section>
+
+        </main>
+    );
 }

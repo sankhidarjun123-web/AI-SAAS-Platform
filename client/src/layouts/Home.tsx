@@ -21,7 +21,7 @@ const Home = () => {
     return (<section className="w-full min-h-screen overflow-hidden">
         {isLoading ? <Skeleton /> : <>
         <NavBar />
-        <div className="h-20 w-full"></div>
+        <div className="h-16 w-full"></div>
         <Outlet />
         </>}
     </ section>)

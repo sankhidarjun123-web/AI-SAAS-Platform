@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import type { RootState } from "../../store/store";
-import { AppIcon, AppIconDark } from "../../assets/images";
+import { AppIcon, AppIconDark, AppIconBig, AppIconBigDark } from "../../assets/images";
 import LoginBtn from "../commons/LoginBtn";
 import SubscribeBtn from "../commons/SubscribeBtn";
 import UserIcon from "../commons/UserIcon";
@@ -19,7 +19,6 @@ import { toggleTheme } from "../../store/themeSlice";
 const NavBar = () => {
 
     const { isAuthenticated } = useAccount();
-    const [isHoveredIcon, setIsHoveredIcon] = useState<boolean>(false);
     const mode = useSelector((state: RootState) => state.theme.mode);
     const navigate = useNavigate();
     const location = useLocation();
@@ -52,23 +51,23 @@ const NavBar = () => {
     ]
 
     return (
-        <nav className="fixed bg-[#EEE9DF] dark:bg-slate-950 z-50 top-0 left-0 w-full h-20 flex items-center px-5 gap-10">
+        <nav className="fixed bg-[#EEE9DF] dark:bg-slate-950 z-50 top-0 left-0 w-full h-16 flex items-center px-5 gap-10">
 
-            <Link onMouseEnter={() => setIsHoveredIcon(true)}
-                onMouseLeave={() => setIsHoveredIcon(false)} to="/">
-                <div
-                    className="flex h-10 items-center gap-3">
-                    <h3
-                        className="hidden md:inline ease-in-out font-extrabold text-2xl transition-all duration-300"
-                        style={{
-                            textShadow: isHoveredIcon
-                                ? "0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 20px #ffcc00, 0 0 40px #ffb300"
-                                : "none",
-                        }}
-                    >
-                        Real Mentor AI
-                    </h3>
-                    <img src={mode !== "dark" ? AppIcon : AppIconDark} className={`${isHoveredIcon && "shadow-[0_0_5px_#ffd700,0_0_10px_#ffd700,0_0_20px_#ffcc00,0_0_40px_#ffb300]"} h-10 transition-all duration-300 ease-in-out aspect-square`} alt="app-icon" />
+            <Link to="/">
+                <div className="flex items-center">
+                    {/* Mobile */}
+                    <img
+                        src={mode !== "dark" ? AppIcon : AppIconDark}
+                        className="block md:hidden h-10 w-10"
+                        alt="app-icon"
+                    />
+
+                    {/* Desktop */}
+                    <img
+                        src={mode !== "dark" ? AppIconBig : AppIconBigDark}
+                        className="hidden md:block h-24 w-auto"
+                        alt="Real Mentor AI"
+                    />
                 </div>
             </Link>
 
