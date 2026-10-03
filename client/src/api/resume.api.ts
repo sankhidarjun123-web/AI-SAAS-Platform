@@ -14,8 +14,7 @@ export const uploadResume = async (
 
 // get a resume review of the client
 export const getResume = async (
-    resumeId: string,
-    getToken: () => Promise<string | null>
+    resumeId: string
 ) => {
 
     const response = await api.get(
@@ -27,7 +26,6 @@ export const getResume = async (
 
 // get user's past resume reviews
 export const getAllResumes = async (
-    getToken: () => Promise<string | null>,
     skip: number,
     limit: number = 5
 ) => {
@@ -42,7 +40,6 @@ export const getAllResumes = async (
 
 // delete a resume review of the client
 export const deleteResume = async (
-    getToken: () => Promise<string | null>,
     resume_id: string
 ) => {
 

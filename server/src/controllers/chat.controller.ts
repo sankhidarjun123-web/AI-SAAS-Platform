@@ -23,21 +23,20 @@ export const createChat = async (req: Request, res: Response) => {
         )
 
         if (!userId) {
-            return res.status(200).json({
-                success: true,
-                chatId: null,
+            return res.status(401).json({
+                success: false,
                 persisted: false,
-                reason: "AUTH_REQUIRED"
+                message: "Unauthorized"
             });
         }
 
-        const chatId = await pool.query(`
+            const chatId = await pool.query(`
         INSERT INTO chats (user_id)
         VALUES ($1)
         RETURNING id
             `, [
-            userId
-        ]);
+                userId
+            ]);
 
         let name: string | null = null;
 
@@ -63,7 +62,7 @@ export const createChat = async (req: Request, res: Response) => {
                         `,
         });
 
-        name = nameQuery?.text?.trim() || null;
+        name = nameQuery?.text?.trim() || msg;
 
         if (name) {
             await pool.query(
@@ -98,7 +97,7 @@ export const sendPrompt = async (req: Request, res: Response) => {
     try {
         const { msg } = req.body;
         const chatId = req?.params?.chatId as string | undefined;
-        
+
         if (!msg) {
             return res.status(400).json({
                 message: "Message is required",

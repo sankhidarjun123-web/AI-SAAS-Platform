@@ -12,7 +12,7 @@ import AppIconBigDark from './AppIconBigDark.png';
 import featureOne from './Features_Images/ChatGPT Image Aug 18, 2026, 09_45_39 PM.png';
 import featureTwo from './Features_Images/ChatGPT Image Aug 18, 2026, 09_47_24 PM.png';
 import featureThree from './Features_Images/ChatGPT Image Aug 18, 2026, 09_48_56 PM.png';
-
+import levelA from './header_images/LevelA.png';
 
 
 // Compaines
@@ -129,5 +129,6 @@ export {
     featureOne,
     featureTwo,
     featureThree,
-    Anna
+    Anna,
+    levelA
 }

@@ -16,7 +16,8 @@ interface AccountDataKeys {
     email: string,
     profile: string,
     created_at: string,
-    updated_at: string
+    updated_at: string,
+    plan: "observer" | "committed"
 }
 
 interface AuthContextType {
@@ -51,6 +52,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             try {
 
                 const token: string | null = await getToken();
+                console.log(token);
 
                 if (!token) {
                     setIsAuthenticated(false);

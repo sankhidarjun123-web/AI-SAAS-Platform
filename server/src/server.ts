@@ -7,7 +7,8 @@ import authApi from "./routes/auth.route.js";
 import chatApi from "./routes/chat.route.js";
 import resumeApi from "./routes/resume.route.js";
 import interviewApi from "./routes/interview.route.js";
-import checkSubscription from "./middlewares/billing.middleware.js";
+import paymentApi from "./routes/payment.route.js";
+import dashboardApi from "./routes/dashboard.route.js";
 import { clerkMiddleware } from '@clerk/express'
 import { authenticate } from "./middlewares/authenticate.middleware.js";
 
@@ -18,9 +19,7 @@ const server = http.createServer(app);
 
 const PORT = 5000;
 
-app.use(cors({
-    origin: "http://localhost:5173"
-}));
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -33,13 +32,17 @@ app.get("/api/health", (_req, res) => {
     });
 });
 
+app.use("/dashboard", authenticate, dashboardApi);
+
 app.use("/auth", authApi);
 
 app.use("/chat", chatApi);
 
+app.use("/payment", authenticate, paymentApi);
+
 app.use("/resume", authenticate, resumeApi);
 
-app.use("/interview", authenticate, checkSubscription, interviewApi);
+app.use("/interview", authenticate, interviewApi);
 
 
 server.listen(PORT, () => {

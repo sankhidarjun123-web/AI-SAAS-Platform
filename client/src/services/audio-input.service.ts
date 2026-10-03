@@ -8,7 +8,7 @@ export class GeminiMicrophone {
     private processor:
         ScriptProcessorNode | null = null;
 
-    private stream: MediaStream | null = null;
+    // private stream: MediaStream | null = null;
 
     private session: any = null;
 
@@ -20,7 +20,7 @@ export class GeminiMicrophone {
         session: any
     ) {
 
-        this.stream = stream;
+        // this.stream = stream;
         this.session = session;
 
         this.audioContext =

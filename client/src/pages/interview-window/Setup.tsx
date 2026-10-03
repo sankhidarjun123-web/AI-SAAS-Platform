@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import {
     Camera,
-    CheckCircle2,
     ChevronRight,
     Globe,
     Mic,

@@ -1,10 +1,10 @@
 import { CalendarDays, Clock3, Video, ArrowRight, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
-interface PendingInterviewProps {
+interface InterviewProps {
     interview: any;
 }
 
-const PendingInterview = ({ interview }: PendingInterviewProps) => {
+const Interview = ({ interview }: InterviewProps) => {
 
     const {
         target_role,
@@ -401,8 +401,8 @@ const PendingInterview = ({ interview }: PendingInterviewProps) => {
 
                     <Link
 
-                        to={`/interview-window/${interview.id}/setup`}
-                        className="
+                        to={interview.status === "pending" ? `/interview-window/${interview.id}/setup` : `/interview-review/${interview.id}`}
+                        className={`
                             group/button
                             flex
                             w-full
@@ -428,11 +428,11 @@ const PendingInterview = ({ interview }: PendingInterviewProps) => {
                             dark:hover:text-white
 
                             lg:w-auto
-                        "
+                        `}
                     >
-                        Start Interview
+                        {interview.status === "pending" ? <>Start Interview
 
-                        <ArrowRight
+                        (<ArrowRight
                             className="
                                 h-4
                                 w-4
@@ -440,7 +440,8 @@ const PendingInterview = ({ interview }: PendingInterviewProps) => {
                                 duration-200
                                 group-hover/button:translate-x-1
                             "
-                        />
+                        />)</>
+                        : "Review"}
 
                     </Link>
 
@@ -452,4 +453,4 @@ const PendingInterview = ({ interview }: PendingInterviewProps) => {
     );
 };
 
-export default PendingInterview;
+export default Interview;

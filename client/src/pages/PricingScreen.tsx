@@ -1,6 +1,30 @@
-import { PricingTable } from "@clerk/clerk-react";
+import PaymentInfo from "../components/Payment/PaymentInfo";
+import { useAccount } from "../context/AuthContext";
 
 export default function PricingScreen() {
+
+    const { accountData } = useAccount();
+    const plans = [
+        {
+            money: 0,
+            name: "Observer",
+            details: [
+                "Chat with Mentor",
+                "Loose analysis of your resume"
+            ],
+            current: accountData.plan === "observer"
+        },
+        {
+            money: 199,
+            name: "Committed",
+            details: [
+                "Efficient, Limitless Chat with Mentor",
+                "Advanced Resume Analysis",
+                "Mock Interviews"
+            ],
+            current: accountData.plan === "committed"
+        }
+    ];
     return (
         <main
             className="
@@ -18,7 +42,6 @@ export default function PricingScreen() {
                 duration-300
             "
         >
-
             {/* =====================================================
                 BACKGROUND AMBIENT GRADIENT
             ====================================================== */}
@@ -204,8 +227,10 @@ export default function PricingScreen() {
 
                 {/* Pricing */}
 
-                <div className="mt-12 w-full">
-                    <PricingTable />
+                <div className="mt-12 w-full flex items-center gap-5">
+                    {plans.map((plan, _) => (
+                        <PaymentInfo details={plan.details} money={plan.money} current={plan.current} name={plan.name} />
+                    ))}
                 </div>
 
             </section>

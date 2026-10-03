@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import type { RootState } from "../../store/store";
@@ -9,16 +9,17 @@ import UserIcon from "../commons/UserIcon";
 import { useAccount } from "../../context/AuthContext";
 import { useClerk } from "@clerk/clerk-react";
 import DropDown, { type Options } from "../commons/DropDown";
-import { LayoutDashboard, SunMoon, LogOut } from "lucide-react";
+import { LayoutDashboard, SunMoon, LogOut, Menu } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toggleTheme } from "../../store/themeSlice";
 
 
 
 
-const NavBar = () => {
+const NavBar = ({ isMobile, setMobileMenuOpen, setOpenHistory }: { isMobile: boolean; setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>, setOpenHistory: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const { isAuthenticated } = useAccount();
+    const grandParentRef = useRef<HTMLDivElement>(null);
     const mode = useSelector((state: RootState) => state.theme.mode);
     const navigate = useNavigate();
     const location = useLocation();
@@ -51,7 +52,7 @@ const NavBar = () => {
     ]
 
     return (
-        <nav className="fixed bg-[#EEE9DF] dark:bg-slate-950 z-50 top-0 left-0 w-full h-16 flex items-center px-5 gap-10">
+        <nav ref={grandParentRef} className="fixed bg-[#EEE9DF] dark:bg-slate-950 z-50 top-0 left-0 w-full h-16 px-10 flex items-center gap-10">
 
             <Link to="/">
                 <div className="flex items-center">
@@ -78,9 +79,17 @@ const NavBar = () => {
                     state: { backgroundLocation: location }
                 })}><LoginBtn /></div>}
 
-                <DropDown options={options}>
+                <DropDown options={options} grandParentRef={grandParentRef}>
                     <UserIcon />
                 </DropDown>
+
+                {(isMobile && location.pathname.includes("dashboard")) && <button onClick={() => setMobileMenuOpen((prev) => !prev)} className="md:hidden">
+                    <Menu size={20} />
+                </button>}
+
+                {(isMobile && location.pathname.includes("career-mentor")) && <button onClick={() => setOpenHistory((prev) => !prev)} className="md:hidden">
+                    <Menu size={20} />
+                </button>}
             </div>
         </nav>
     )

@@ -6,12 +6,16 @@ export default function FullScreenLayout() {
 
     const [warning, setWarning] = useState("");
     const [showWarning, setShowWarning] = useState(false);
+    const [toFullScreen, setToFullScreen] = useState(true);
     const [chances, setChances] = useState(3);
+    const [limitReached, setLimitReached] = useState(false);
 
     const intentionalExit = useRef(false);
 
     const returnToFullscreen = async () => {
         try {
+            intentionalExit.current = false;
+
             if (!document.fullscreenElement) {
                 await document.documentElement.requestFullscreen();
             }
@@ -23,8 +27,16 @@ export default function FullScreenLayout() {
         }
     };
 
-
     useEffect(() => {
+
+        if (!toFullScreen) {
+            // If fullscreen is no longer required, exit it.
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(console.error);
+            }
+
+            return;
+        }
 
         const enterFullscreen = async () => {
             try {
@@ -36,23 +48,28 @@ export default function FullScreenLayout() {
             }
         };
 
-
         const handleFullscreenChange = () => {
 
             if (
                 !document.fullscreenElement &&
                 !intentionalExit.current
             ) {
-
                 console.log("User exited fullscreen");
 
                 setWarning("You exited fullscreen mode!");
                 setShowWarning(true);
 
-                setChances(prev => Math.max(prev - 1, 0));
+                setChances(prev => {
+                    const next = Math.max(prev - 1, 0);
+
+                    if (next === 0) {
+                        setLimitReached(true);
+                    }
+
+                    return next;
+                });
             }
         };
-
 
         document.addEventListener(
             "fullscreenchange",
@@ -61,23 +78,14 @@ export default function FullScreenLayout() {
 
         enterFullscreen();
 
-
         return () => {
-
             document.removeEventListener(
                 "fullscreenchange",
                 handleFullscreenChange
             );
-
-            intentionalExit.current = true;
-
-            if (document.fullscreenElement) {
-                document.exitFullscreen().catch(console.error);
-            }
         };
 
-    }, []);
-
+    }, [toFullScreen]);
 
     return (
         <>
@@ -91,7 +99,14 @@ export default function FullScreenLayout() {
                 </div>
             )}
 
-            <Outlet context={{ setWarning, chances }} />
+            <Outlet
+                context={{
+                    setWarning,
+                    chances,
+                    limitReached,
+                    setToFullScreen
+                }}
+            />
         </>
     );
 }

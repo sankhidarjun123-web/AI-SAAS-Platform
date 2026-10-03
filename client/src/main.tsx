@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { createRoot } from "react-dom/client";
 import { AuthProvider } from "./context/AuthContext";
+import { DashboardProvider } from "./context/DashboardContext";
 import "./index.css";
 import App from "./App";
 import { store } from "./store/store";
@@ -24,7 +25,9 @@ createRoot(document.getElementById("root")!).render(
         }}
       >
         <AuthProvider>
-          <App />
+          <DashboardProvider>
+            <App />
+          </DashboardProvider>
         </AuthProvider>
       </ClerkProvider>
     </BrowserRouter>

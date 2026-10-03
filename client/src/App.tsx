@@ -21,15 +21,17 @@ import InterviewWindow from "./layouts/InterviewWindow";
 import Setup from './pages/interview-window/Setup';
 import InterviewScreen from "./pages/interview-window/InterviewScreen";
 import { Error } from "./pages/Error";
-import PendingInterviewList from "./pages/dashboard/PendingInterviewList";
+import InterviewList from "./pages/dashboard/InterviewList";
 import EndScreen from "./pages/interview-window/EndScreen";
-import MockTestList from "./pages/dashboard/MockTestList";
 import InterviewReview from "./pages/interview-window/InterviewReview";
 import SettingsPage from "./pages/SettingPage";
 import QuestionAnalysis from "./features/interview-review/QuestionAnalysis";
 import KeyMoments from "./features/interview-review/KeyMoments";
 import VideoAndAudioAnalysis from "./features/interview-review/VideoAndAudioAnalysis";
 import FullScreenLayout from "./layouts/FullScreenLayout";
+import ResumeBuilder from "./pages/dashboard/ResumeBuilder";
+import FollowUp from "./pages/resume-builder/FollowUp";
+import Payment from "./pages/Payment";
 
 function App() {
 
@@ -59,17 +61,30 @@ function App() {
       <Route path="/" element={<Home />}>
         <Route index element={<LandingPage />} />
         <Route path="billing" element={<PricingScreen />} />
+        <Route path="/payment" element={<Payment />} />
         <Route path="dashboard" element={<Dashboard />}>
           <Route path="/dashboard" element={<Navigate to="/dashboard/overview" replace />} />
           <Route path="overview" element={<ProtectedRoute><DashboardHome /></ ProtectedRoute>} />
           <Route path="resume-analyzer" element={<ProtectedRoute><ResumeAnalyzer /></ProtectedRoute>} />
           <Route path="mock-interview" element={<ProtectedRoute><InterviewHome /></ProtectedRoute>} />
-          <Route path="pending-interviews" element={<ProtectedRoute><PendingInterviewList /></ProtectedRoute>} />
-          <Route path="mock-test" element={<ProtectedRoute><MockTestList /></ProtectedRoute>} />
+          <Route path="interviews" element={<ProtectedRoute><InterviewList /></ProtectedRoute>} />
+          <Route path="resume-builder" element={<ProtectedRoute><ResumeBuilder /></ProtectedRoute>} />
+        </Route>
+
+        <Route path="/resume-builder">
+          <Route index element={<FollowUp />} />
         </Route>
         <Route path="/career-mentor">
           <Route index element={<CareerMentor />} />
           <Route path=":chatId" element={<CareerMentor />} />
+        </Route>
+
+
+        <Route path='/interview-review/:interviewId' element={<InterviewReview />}>
+          <Route index element={<QuestionAnalysis />} />
+          <Route path="question-analysis" element={<QuestionAnalysis />} />
+          <Route path="video-audio-analysis" element={<VideoAndAudioAnalysis />} />
+          <Route path="key-moments" element={<KeyMoments />} />
         </Route>
       </Route>
 
@@ -79,13 +94,6 @@ function App() {
           <Route path=":interviewId/screen" element={<InterviewScreen />} />
           <Route path=":interviewId/end" element={<EndScreen />} />
         </Route>
-      </Route>
-
-      <Route path='/interview-review' element={<InterviewReview />}>
-        <Route index element={<QuestionAnalysis />} />
-        <Route path="question-analysis" element={<QuestionAnalysis />} />
-        <Route path="video-audio-analysis" element={<VideoAndAudioAnalysis />} />
-        <Route path="key-moments" element={<KeyMoments />} />
       </Route>
 
       <Route path="/resume-review/:resumeId" element={<ProtectedRoute><ResumeReview /></ProtectedRoute>} />

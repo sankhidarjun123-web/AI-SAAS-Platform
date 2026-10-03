@@ -3,13 +3,14 @@ import streamifier from "streamifier";
 import type { UploadApiResponse } from "cloudinary";
 
 export const uploadResume = (
-    buffer: Buffer
+    buffer: Buffer,
+    folder: string = "resumes"
 ): Promise<UploadApiResponse> => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
             {
-                folder: "resumes",
-                resource_type: "raw",
+                folder: folder,
+                resource_type: "image",
             },
             (error, result) => {
                 if (error) return reject(error);
@@ -29,7 +30,7 @@ export const uploadResume = (
 export const deleteResume = async (publicId: string): Promise<boolean | null> => {
   try {
     const result = await cloudinary.uploader.destroy(publicId, {
-      resource_type: "raw",
+      resource_type: "image",
     });
 
     if (result.result !== "ok") {
@@ -44,6 +45,34 @@ export const deleteResume = async (publicId: string): Promise<boolean | null> =>
     return false;
   }
 };
+
+export const uploadImage = (
+    buffer: Buffer,
+    mimeType: string,
+    folder: string = "resume/images"
+): Promise<any> => {
+
+    return new Promise((resolve, reject) => {
+
+        const uploadStream = cloudinary.uploader.upload_stream(
+            {
+                folder: folder,
+                resource_type: "image"
+            },
+            (error, result) => {
+
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve(result);
+            }
+        );
+
+        uploadStream.end(buffer);
+    });
+}
 
 
 export const uploadInterviewVideo = (

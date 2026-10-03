@@ -69,3 +69,135 @@ export const signInAppearance = {
     identityPreviewEditButton: "text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400",
   },
 };
+
+
+
+export const pricingAppearance = {
+    variables: {
+        colorPrimary: "#f59e0b",
+        borderRadius: "1rem",
+    },
+
+    elements: {
+        // =========================
+        // CARD
+        // =========================
+
+        pricingTableCard:
+            "rounded-3xl " +
+
+            // Light
+            "border border-slate-200/80 " +
+            "bg-white/80 " +
+            "shadow-lg shadow-slate-900/10 " +
+
+            // Dark
+            "dark:border-slate-800/80 " +
+            "dark:bg-slate-900/70 " +
+            "dark:shadow-black/30 " +
+
+            // Common
+            "backdrop-blur-xl " +
+            "transition-all duration-300 " +
+            "hover:-translate-y-1 " +
+            "hover:shadow-xl " +
+            "dark:hover:border-amber-500/30 " +
+            "dark:hover:shadow-amber-500/5",
+
+        // =========================
+        // CARD HEADER
+        // =========================
+
+        pricingTableCardHeader:
+            "border-b border-slate-100 " +
+            "dark:border-slate-800",
+
+        // =========================
+        // TITLE
+        // =========================
+
+        pricingTableCardTitle:
+            "text-xl font-bold " +
+            "text-slate-900 " +
+            "dark:text-white",
+
+        // =========================
+        // DESCRIPTION
+        // =========================
+
+        pricingTableCardDescription:
+            "mt-2 text-sm leading-6 " +
+            "text-slate-500 " +
+            "dark:text-slate-400",
+
+        // =========================
+        // PRICE
+        // =========================
+
+        pricingTableCardPrice:
+            "text-4xl font-extrabold tracking-tight " +
+            "text-slate-900 " +
+            "dark:text-white",
+
+        pricingTableCardPriceSuffix:
+            "text-sm font-medium " +
+            "text-slate-500 " +
+            "dark:text-slate-400",
+
+        // =========================
+        // FEATURES
+        // =========================
+
+        pricingTableCardFeature:
+            "text-sm " +
+            "text-slate-600 " +
+            "dark:text-slate-300",
+
+        pricingTableCardFeatureIcon:
+            "text-amber-500 " +
+            "dark:text-amber-400",
+
+        // =========================
+        // BUTTON
+        // =========================
+
+        pricingTableCardButton:
+            "rounded-xl " +
+
+            // Light
+            "bg-amber-500 " +
+            "text-white " +
+            "shadow-md shadow-amber-500/20 " +
+            "hover:bg-amber-600 " +
+
+            // Dark
+            "dark:bg-amber-500 " +
+            "dark:text-white " +
+            "dark:hover:bg-amber-400 " +
+            "dark:hover:text-slate-950 " +
+
+            // Common
+            "font-semibold " +
+            "transition-all duration-200 " +
+            "hover:shadow-lg " +
+            "dark:hover:shadow-amber-500/20",
+
+        // =========================
+        // BADGE
+        // =========================
+
+        pricingTableCardBadge:
+            "rounded-full " +
+
+            // Light
+            "bg-amber-100 " +
+            "text-amber-700 " +
+
+            // Dark
+            "dark:bg-amber-500/10 " +
+            "dark:text-amber-300 " +
+
+            // Common
+            "px-3 py-1 text-xs font-bold",
+    },
+};

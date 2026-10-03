@@ -1,10 +1,10 @@
 import { getPendingInterviews } from "../../api/interview.api";
-import PendingInterview from "../../components/Dashboard/PendingInterview";
+import Interview from "../../components/Dashboard/Interview";
 import { usePaginationFetch } from "../../hooks/usePaginationFetch";
 import { useRef } from "react";
 import CommonLoader from "../../ui/loader/CommonLoader";
 
-const PendingInterviewList = () => {
+const InterviewList = () => {
 
     const loaderRef = useRef<HTMLDivElement | null>(null);
 
@@ -23,6 +23,9 @@ const PendingInterviewList = () => {
         "interviews",
         (skip, limit) => [skip, limit]
     );
+
+    const pendingInterviews = interviews.filter((interview) => interview.status === "pending");
+    const completedInterviews = interviews.filter((interview) => interview.status === "completed");
 
     const isInitialLoading = intLoading && interviews.length === 0;
     const hasInterviews = interviews.length > 0;
@@ -103,7 +106,7 @@ const PendingInterviewList = () => {
                                     sm:text-3xl
                                 "
                             >
-                                Pending Interviews
+                                Interviews
                             </h1>
 
                             <p
@@ -292,14 +295,21 @@ const PendingInterviewList = () => {
                 {/* INTERVIEWS */}
                 {hasInterviews && (
                     <div className="space-y-3">
-
-                        {interviews.map((interview: any) => (
-                            <PendingInterview
+                        {pendingInterviews.length > 0 && <h2 className="w-full text-start font-bold pl-3 text-2xl">Pending Interviews</h2>}
+                        {pendingInterviews.map((interview: any) => (
+                            <Interview
                                 key={interview.id}
                                 interview={interview}
                             />
                         ))}
 
+                        {completedInterviews.length > 0 && <h2 className="w-full text-start font-bold pl-3 text-2xl">Completed Interview</h2>}
+                        {completedInterviews.map((interview: any) => (
+                            <Interview
+                                key={interview.id}
+                                interview={interview}
+                            />
+                        ))}
                     </div>
                 )}
 
@@ -384,4 +394,4 @@ const PendingInterviewList = () => {
     );
 };
 
-export default PendingInterviewList;
+export default InterviewList;

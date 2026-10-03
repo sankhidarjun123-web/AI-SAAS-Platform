@@ -1,12 +1,11 @@
 import React, { useRef, useState } from "react";
 import { UploadCloud, FileText, X } from "lucide-react";
 import { uploadResume } from "../../api/resume.api";
-import { useAuth } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const DropResume: React.FC = () => {
   const navigate = useNavigate();
-  const { getToken } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,11 +44,14 @@ const DropResume: React.FC = () => {
     setLoading(true);
     try {
 
-        const analysis = await uploadResume(formData);
+      const analysis = await uploadResume(formData);
 
-        navigate(`/resume-review/${analysis?.resumeId}`);
+      navigate(`/resume-review/${analysis?.resumeId}`);
     } catch (err) {
-        console.error(err);
+      if (axios.isAxiosError(err) && err.response?.status === 403) {
+        navigate("/billing");
+      }
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -68,11 +70,10 @@ const DropResume: React.FC = () => {
         className={`w-full max-w-3xl rounded-3xl border-2 border-dashed cursor-pointer overflow-hidden transition-all duration-300 shadow-lg
         bg-white dark:bg-zinc-900
         border-gray-300 dark:border-zinc-700
-        ${
-          dragging
+        ${dragging
             ? "scale-[1.02] bg-gray-100 dark:bg-zinc-800"
             : "hover:bg-gray-100 dark:hover:bg-zinc-800"
-        }`}
+          }`}
       >
         <input
           ref={inputRef}

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getResume } from "../../api/resume.api";
-import { useAuth } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 
 interface ResumeReviewData {
@@ -18,7 +17,6 @@ interface ResumeReviewData {
 }
 
 const ResumeReview = () => {
-  const { getToken } = useAuth();
   const { resumeId } = useParams();
   const navigate = useNavigate();
 
@@ -31,7 +29,7 @@ const ResumeReview = () => {
         if (!resumeId) {
           throw new Error("Resume id cannot be null or undefined");
         }
-        const reviewData = await getResume(resumeId, getToken);
+        const reviewData = await getResume(resumeId);
         setReview(reviewData.resumeData);
       } catch {
         navigate("/not-found");
@@ -41,7 +39,7 @@ const ResumeReview = () => {
     };
 
     fetchResume();
-  }, [resumeId, navigate, getToken]);
+  }, [resumeId, navigate]);
 
   if (loading) {
     return (

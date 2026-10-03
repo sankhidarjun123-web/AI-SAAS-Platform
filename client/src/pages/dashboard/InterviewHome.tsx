@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import { usePaginationFetch } from "../../hooks/usePaginationFetch";
 import { getAllResumes } from "../../api/resume.api";
 import CommonLoader from "../../ui/loader/CommonLoader";
@@ -134,6 +134,10 @@ const InterviewHome: React.FC = () => {
 
             navigate(`/interview-window/${createdInterview.interviewId}/setup`);
         } catch (err) {
+
+            if(axios.isAxiosError(err) && err.response?.status === 403) {
+                navigate("/billing");
+            }
             console.error(err);
         } finally {
             setIntLoading(false);
@@ -160,19 +164,25 @@ const InterviewHome: React.FC = () => {
                     transition={{ duration: 0.4 }}
                     className="border-b border-zinc-200 pb-6 dark:border-zinc-800"
                 >
-                    <span className="text-xs font-bold uppercase tracking-widest text-indigo-500 dark:text-indigo-400">
-                        Interview Workspace
-                    </span>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <span className="text-xs font-bold uppercase tracking-widest text-indigo-500 dark:text-indigo-400">
+                                Interview Workspace
+                            </span>
 
-                    <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-zinc-900 md:text-4xl dark:text-zinc-100">
-                        AI Mock Interview
-                    </h1>
+                            <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-zinc-900 md:text-4xl dark:text-zinc-100">
+                                AI Mock Interview
+                            </h1>
 
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-600 md:text-base dark:text-zinc-400">
-                        Select your resume and provide some information about
-                        yourself. This information will be combined with your
-                        resume and used to personalize your interview.
-                    </p>
+                            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-600 md:text-base dark:text-zinc-400">
+                                Select your resume and provide some information about
+                                yourself. This information will be combined with your
+                                resume and used to personalize your interview.
+                            </p>
+                        </div>
+
+                        <Link to="/dashboard/interviews" className="h-10 rounded-sm bg-white dark:bg-black text-black dark:text-white p-2 text-sm border border-slate-300 dark:border-slate-600 text-center">Your interview space</Link>
+                    </div>
                 </motion.div>
 
                 {/* =====================================================

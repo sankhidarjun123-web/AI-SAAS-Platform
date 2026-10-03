@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Rating from '@mui/material/Rating';
-import Box from '@mui/material/Box';
 import { reviews, type Reviews } from "../../data/reviews";
 
 

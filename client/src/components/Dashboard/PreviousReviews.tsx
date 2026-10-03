@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useRef }  from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import DropDown from "../commons/DropDown";
 import type { Options } from "../commons/DropDown";
-import { useAuth } from "@clerk/clerk-react";
 import { deleteResume } from "../../api/resume.api";
 import {
     Calendar,
@@ -28,12 +27,12 @@ export const PreviousReviews: React.FC<ReviewData> = ({
     reviewIndex,
     reviewData,
 }) => {
-    const { getToken } = useAuth();
     const navigate = useNavigate();
+    const grandFatherRef = useRef<HTMLDivElement |null>(null);
 
     const deleteReview = async () => {
         try {
-            await deleteResume(getToken, reviewData.id);
+            await deleteResume(reviewData.id);
 
             setDeletedReview((prev) => {
                 const updated = [...prev];
@@ -101,6 +100,7 @@ export const PreviousReviews: React.FC<ReviewData> = ({
 
     return (
         <motion.div
+            ref={grandFatherRef}
             whileHover={{ y: -3 }}
             whileTap={{ scale: 0.99 }}
             onClick={() =>
@@ -279,7 +279,7 @@ export const PreviousReviews: React.FC<ReviewData> = ({
 
                     {/* More Dropdown */}
                     <div onClick={(e) => e.stopPropagation()}>
-                        <DropDown options={options}>
+                        <DropDown options={options} grandParentRef={grandFatherRef}>
                             <button
                                 type="button"
                                 className="

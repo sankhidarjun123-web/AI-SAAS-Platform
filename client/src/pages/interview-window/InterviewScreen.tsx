@@ -6,8 +6,9 @@ import {
     Timer,
     Wifi,
 } from "lucide-react";
+import { useOutletContext } from "react-router-dom";
 import { Anna } from "../../assets/images";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type SetStateAction } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { startInterview } from "../../api/interview.api";
 import { startGeminiSession } from "../../services/gemini.service";
@@ -29,6 +30,7 @@ type InterviewQA = {
 const InterviewScreen = () => {
 
     const navigate = useNavigate();
+    const { limitReached, setToFullScreen }: { limitReached: boolean, setToFullScreen: React.Dispatch<SetStateAction<boolean>> } = useOutletContext();
     const { interviewId } = useParams();
 
     // all refs
@@ -74,6 +76,8 @@ const InterviewScreen = () => {
     const [isSpeaking, setIsSpeaking] =
         useState(false);
 
+    const [interviewQA, setInterviewQA] = useState<InterviewQA[]>([]);
+
     const [submitting, setSubmitting] = useState<boolean>(false);
 
     const [interviewActive, setInterviewActive] = useState<boolean>(false);
@@ -83,35 +87,39 @@ const InterviewScreen = () => {
 
     const [annaSpeaking, setAnnaSpeaking] = useState<boolean>(false);
 
+    useEffect(() => {
+        console.log(`You speaking: ${isSpeaking ? "Yes" : "No"}`);
+    }, [isSpeaking]);
 
     /*===========MAIN FUNCTIONS TO HANDLE THE QUESTION AND ANSWER DATA FROM THE GEMINI===============*/
     // this function runs everytime the value of question and answer changes apparently it only appends the
     // interviewQA ref when both question and answers are avaible and it needs shift their as questions shall be pushed
     // first they shall not wait for the answers to be delivered to complete the transaction
     const saveCurrentQA = () => {
-
-        const question =
-            currentQuestionRef.current.trim();
-
-        const answer =
-            currentAnswerRef.current.trim();
+        const question = currentQuestionRef.current.trim();
+        const answer = currentAnswerRef.current.trim();
 
         // No question means nothing to save
         if (!question) {
             return;
         }
 
-        interviewQARef.current.push({
+        const qa = {
             question,
             answer: answer || "Unavailable"
-        });
+        };
 
-        console.log(
-            "✅ Q&A Saved:",
-            interviewQARef.current
-        );
+        // Ref → backend/submission data
+        interviewQARef.current.push(qa);
 
-        // Clear current values for next Q&A
+        // State → UI rendering
+        setInterviewQA(prev => [
+            ...prev,
+            qa
+        ]);
+
+        console.log("✅ Q&A Saved:", interviewQARef.current);
+
         currentQuestionRef.current = "";
         currentAnswerRef.current = "";
     };
@@ -301,7 +309,6 @@ const InterviewScreen = () => {
             setInterviewActive(false);
 
             console.log("Interview ended");
-            navigate(`/interview-window/${interviewId}/end`);
         } catch (err) {
             console.error(err);
         } finally {
@@ -570,6 +577,27 @@ const InterviewScreen = () => {
         ).padStart(2, "0")}`;
     };
 
+    // end the interview immediately if the user exists the full screen
+    // and all the chances are gone
+    useEffect(() => {
+        if (limitReached) endInterview();
+    }, [limitReached]);
+
+
+    useEffect(() => {
+        if (submitting) setToFullScreen(false);
+    }, [submitting]);
+
+    useEffect(() => {
+        if (!submitting) return;
+
+        const timer = setTimeout(() => {
+            navigate(`/interview-window/${interviewId}/end`);
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [submitting, navigate]);
+
 
     useEffect(() => {
         const video = videoRef.current;
@@ -605,8 +633,10 @@ const InterviewScreen = () => {
         >
             {submitting ? (
 
-                <div className="flex flex-1 items-center justify-center">
+                <div className="flex flex-1 items-center flex-col justify-center">
                     <CommonLoader />
+
+                    <span>We are submitting your response!</span>
                 </div>
 
             ) : (<>
@@ -777,12 +807,12 @@ const InterviewScreen = () => {
                 VIDEO AREA
             ========================================= */}
 
-                <main className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden p-3 sm:p-5 lg:p-6">
+                <main className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden p-3 sm:p-2 lg:p-3">
                     <div
                         className="
             grid
             h-full
-            max-w-7xl
+            w-7xl
             grid-cols-2
             grid-rows-2
             gap-3
@@ -1092,16 +1122,11 @@ const InterviewScreen = () => {
 
                             <div className="mt-4 space-y-4">
 
-                                {interviewQARef.current
-                                    .filter(
-                                        (qa) =>
-                                            qa.answer !== "Unavailable"
-                                    )
-                                    .map((qa, index) => (
+                                {interviewQA.map((qa, index) => (
 
-                                        <div
-                                            key={index}
-                                            className="
+                                    <div
+                                        key={index}
+                                        className="
                         rounded-xl
                         border
                         border-slate-200
@@ -1110,102 +1135,100 @@ const InterviewScreen = () => {
                         dark:border-slate-800
                         dark:bg-zinc-900
                     "
-                                        >
+                                    >
 
-                                            {/* =====================
+                                        {/* =====================
                         QUESTION
                     ===================== */}
 
-                                            <div className="mb-4">
+                                        <div className="max-w-full mb-4">
 
-                                                <div className="mb-2 flex items-center gap-2">
+                                            <div className="mb-2 flex items-center gap-2">
 
-                                                    <div className="h-2 w-2 rounded-full bg-indigo-500" />
+                                                <div className="h-2 w-2 rounded-full bg-indigo-500" />
 
-                                                    <span
-                                                        className="
+                                                <span
+                                                    className="
                                     text-xs
                                     font-semibold
                                     text-indigo-500
                                 "
-                                                    >
-                                                        Anna
-                                                    </span>
+                                                >
+                                                    Anna
+                                                </span>
 
-                                                </div>
+                                            </div>
 
 
-                                                <p
-                                                    className="
+                                            <p
+                                                className="
                                 text-sm
                                 font-medium
                                 leading-relaxed
                                 text-slate-800
                                 dark:text-white
                             "
-                                                >
-                                                    {qa.question}
-                                                </p>
+                                            >
+                                                {qa.question}
+                                            </p>
 
-                                            </div>
+                                        </div>
 
 
-                                            {/* =====================
+                                        {/* =====================
                         ANSWER
                     ===================== */}
 
-                                            <div
-                                                className="
+                                        <div
+                                            className="
                             border-t
                             border-slate-200
                             pt-4
                             dark:border-slate-800
                         "
-                                            >
+                                        >
 
-                                                <div className="mb-2 flex items-center gap-2">
+                                            <div className="mb-2 flex items-center gap-2">
 
-                                                    <div className="h-2 w-2 rounded-full bg-green-500" />
+                                                <div className="h-2 w-2 rounded-full bg-green-500" />
 
-                                                    <span
-                                                        className="
+                                                <span
+                                                    className="
                                     text-xs
                                     font-semibold
                                     text-green-500
                                 "
-                                                    >
-                                                        Your Answer
-                                                    </span>
+                                                >
+                                                    Your Answer
+                                                </span>
 
-                                                </div>
+                                            </div>
 
 
-                                                <p
-                                                    className="
+                                            <p
+                                                className="
                                 text-sm
                                 leading-relaxed
                                 text-slate-600
                                 dark:text-slate-300
                             "
-                                                >
-                                                    {qa.answer}
-                                                </p>
-
-                                            </div>
+                                            >
+                                                {qa.answer === "Unavailable" ? "Answer the question" : qa.answer}
+                                            </p>
 
                                         </div>
 
-                                    ))}
+                                    </div>
+
+                                ))}
 
 
                                 {/* No completed Q&A */}
 
-                                {interviewQARef.current.filter(
-                                    (qa) => qa.answer !== "Unavailable"
-                                ).length === 0 && (
+                                {interviewQARef.current.length === 0 && (
 
-                                        <div
-                                            className="
+                                    <div
+                                        className="
                     flex
                     min-h-32
                     items-center
@@ -1216,15 +1239,15 @@ const InterviewScreen = () => {
                     border-slate-300
                     dark:border-slate-700
                 "
-                                        >
+                                    >
 
-                                            <p className="text-sm text-slate-400">
-                                                Questions and answers will appear here...
-                                            </p>
+                                        <p className="text-sm text-slate-400">
+                                            Questions and answers will appear here...
+                                        </p>
 
-                                        </div>
+                                    </div>
 
-                                    )}
+                                )}
 
                             </div>
 

@@ -26,7 +26,7 @@ export const sendPrompt = async (chatId: string | null, message: string) => {
 }
 
 
-export const getConversation = async (chatId: string, getToken: () => Promise<string | null>, skip: number, limit: number = 5) => {
+export const getConversation = async (chatId: string, skip: number, limit: number = 5) => {
 
 
     const response = await api.get(`/chat/c/${chatId}?limit=${limit}&skip=${skip}`)
@@ -35,7 +35,7 @@ export const getConversation = async (chatId: string, getToken: () => Promise<st
 }
 
 
-export const getConversations = async (getToken: () => Promise<string | null>, skip: number, limit: number = 10) => {
+export const getConversations = async (skip: number, limit: number = 10) => {
 
     const response = await api.get(`/chat/history?limit=${limit}&skip=${skip}`);
 

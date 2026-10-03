@@ -1,4 +1,4 @@
-import React, { type Dispatch, type SetStateAction } from "react";
+import React from "react";
 import { MoreHorizontal } from "lucide-react";
 
 interface HistoryItemProps {

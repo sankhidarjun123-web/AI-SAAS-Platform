@@ -2,8 +2,7 @@ import {
     GoogleGenAI,
     LiveServerMessage,
     Modality,
-    Type,
-    FunctionCallingConfigMode
+    Type
 } from "@google/genai";
 import { interviewPrompt } from "../utils/interviewPrompt";
 
@@ -34,13 +33,6 @@ export const startGeminiSession = async (
 
     let questionBuffer = "";
 
-
-    const interviewContext =
-        JSON.stringify(
-            interviewDetails,
-            null,
-            2
-        );
 
 
     const resumeContext =

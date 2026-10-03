@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Menu, LayoutDashboard, FileSearch, Mic, Bot, Target, History } from "lucide-react";
+import { Menu, LayoutDashboard, FileSearch, Mic, Bot, FilePenLine } from "lucide-react";
 import { useSelector } from "react-redux";
 import { type RootState } from "../../store/store";
 import { NavLink } from "react-router-dom";
@@ -10,45 +10,45 @@ interface AsideDashboardProps {
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-type NavOption = {
+export type NavOption = {
   name: string;
   navPath: string;
   icon: React.ElementType;
 };
+
+export const navOptions: NavOption[] = [
+  {
+    name: "Overview",
+    navPath: "/dashboard/overview",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Resume Analyzer",
+    navPath: "/dashboard/resume-analyzer",
+    icon: FileSearch,
+  },
+  {
+    name: "Mock Interview",
+    navPath: "/dashboard/mock-interview",
+    icon: Mic,
+  },
+  {
+    name: "Career Mentor",
+    navPath: "/career-mentor",
+    icon: Bot,
+  },
+  {
+    name: "Resume Builder",
+    navPath: "/dashboard/resume-builder",
+    icon: FilePenLine,
+  }
+];
 
 const AsideDashboard = ({
   expanded,
   setExpanded,
 }: AsideDashboardProps) => {
   const mode = useSelector((state: RootState) => state.theme.mode);
-
-  const navOptions: NavOption[] = [
-    {
-      name: "Overview",
-      navPath: "/dashboard/overview",
-      icon: LayoutDashboard,
-    },
-    {
-      name: "Resume Analyzer",
-      navPath: "/dashboard/resume-analyzer",
-      icon: FileSearch,
-    },
-    {
-      name: "Mock Interview",
-      navPath: "/dashboard/mock-interview",
-      icon: Mic,
-    },
-    {
-      name: "Career Mentor",
-      navPath: "/career-mentor",
-      icon: Bot,
-    },
-    {
-      name: "Mock Test",
-      navPath: "/dashboard/mock-test",
-      icon: Target,
-    }
-  ];
 
   return (
     <motion.aside
@@ -102,16 +102,14 @@ const AsideDashboard = ({
                 group flex items-center rounded-xl
                 transition-all duration-200
 
-                ${
-                  expanded
-                    ? "gap-3 px-4 py-3"
-                    : "justify-center w-12 h-12 mx-auto"
+                ${expanded
+                  ? "gap-3 px-4 py-3"
+                  : "justify-center w-12 h-12 mx-auto"
                 }
 
-                ${
-                  isActive
-                    ? "bg-black text-white dark:bg-white dark:text-black shadow-md"
-                    : "text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10"
+                ${isActive
+                  ? "bg-black text-white dark:bg-white dark:text-black shadow-md"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10"
                 }
                 `
               }

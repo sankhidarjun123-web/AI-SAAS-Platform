@@ -7,7 +7,7 @@ export const checkDailyLimit = async (
     next: NextFunction
 ) => {
     try {
-        const maxChat = req.isSubscribed ? 100 : 10;
+        const maxChat = req.plan === "committed" ? 100 : 10;
         const chatId = req.body.chatId || req.params.chatId;
         const { msg } = req.body;
 
@@ -39,7 +39,7 @@ export const checkDailyLimit = async (
         if (result.rows.length === 0) {
             let message: string;
 
-            if (req.isSubscribed) {
+            if (req.plan === "committed") {
                 message =
                     `You have reached your daily chat limit of ${maxChat}. ` +
                     `Come back tomorrow, my dear apprentice.`;

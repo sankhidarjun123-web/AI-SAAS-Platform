@@ -38,7 +38,7 @@ export const getPendingInterviews = async (skip: number, limit: number = 10) => 
 
 
 export const getCompletedInterviewDetails = async(interviewId: string) => {
-
+    
     const response = await api.get(`/interview/interview-review/${interviewId}`);
 
     return response.data;

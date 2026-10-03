@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
+import React, { useState, type Dispatch, type SetStateAction } from 'react';
 import { useNavigate } from "react-router-dom";
 import { createChat, sendPrompt as apiSendPRrompt } from '../../../api/chat.api';
 import { Mic, Plus, ArrowUp } from "lucide-react";
@@ -13,7 +13,7 @@ interface PromptBoxProps {
   hasMessages: boolean;
   setHasMessages: Dispatch<SetStateAction<boolean>>;
 }
-export const PromptBox: React.FC<PromptBoxProps> = ({ setNewReply, setChatError, setNewMessage, chatId, hasMessages, setHasMessages }) => {
+export const PromptBox: React.FC<PromptBoxProps> = ({ setNewReply, setChatError, setNewMessage, chatId }) => {
 
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState<string>("");
@@ -33,9 +33,14 @@ export const PromptBox: React.FC<PromptBoxProps> = ({ setNewReply, setChatError,
         } catch (err: unknown) {
           if (axios.isAxiosError(err) && err.response?.status === 429) {
             setChatError("Sorry we are experiencing trouble responding, please try again later");
+            return;
           }
+          // else if (axios.isAxiosError(err) && err.response?.status === 401) {
+          //   const chatData = await apiSendPRrompt(conv ?? chatId, aiPrompt);
+          //   setNewReply(chatData?.aiResponse || null);
+          //   return;
+          // }
           console.error(err);
-          return;
         }
         if (chatDetails.persisted) {
           conv = chatDetails.chatId;

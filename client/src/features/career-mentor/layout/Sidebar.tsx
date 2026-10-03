@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, type Dispatch, type SetStateAction } from "react";
-import { PanelLeft, Search, SquarePen, MessageCircle, Circle } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { PanelLeft, Search, SquarePen, MessageCircle } from "lucide-react";
 import { getConversations } from "../../../api/chat.api";
 import { usePaginationFetch } from "../../../hooks/usePaginationFetch";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from '@clerk/clerk-react';
 import HistoryItem from '../../../components/Career-Mentor/HistoryItem';
 import CommonLoader from '../../../ui/loader/CommonLoader';
@@ -22,17 +22,15 @@ type Conversation = {
 export const Sidebar: React.FC<SidebarProps> = ({ currentChat }) => {
 
   const { getToken } = useAuth();
-
   const [expanded, setExpanded] = useState<boolean>(() => {
     const saved = localStorage.getItem("careerMentorSidebar");
 
     return saved !== null ? JSON.parse(saved) : true;
   });
-  const navigate = useNavigate();
 
   const loaderRef = useRef(null);
 
-  const { data: conversations, setData: setConversations, loading: conLoading, limitReached } = usePaginationFetch<Conversation, any>({ limit: 10, skip: 0, sort: "asc", divRef: loaderRef }, getConversations, "conversations", (skip, limit) => [getToken, skip, limit]);
+  const { data: conversations, loading: conLoading, limitReached } = usePaginationFetch<Conversation, any>({ limit: 10, skip: 0, sort: "asc", divRef: loaderRef }, getConversations, "conversations", (skip, limit) => [getToken, skip, limit]);
 
   useEffect(() => {
     localStorage.setItem(
