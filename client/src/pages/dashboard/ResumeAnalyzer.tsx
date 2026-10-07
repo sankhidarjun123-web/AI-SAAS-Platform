@@ -80,7 +80,7 @@ const ResumeAnalyzer: React.FC = () => {
                 {/* =====================================================
                     MAIN CONTENT
                 ====================================================== */}
-                <div className="grid gap-6 lg:grid-cols-5">
+                <div className="grid min-w-0 gap-6 lg:grid-cols-5">
 
                     {/* =================================================
                         UPLOAD PANEL
@@ -89,7 +89,7 @@ const ResumeAnalyzer: React.FC = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: 0.1 }}
-                        className="lg:col-span-3"
+                        className="min-w-0 lg:col-span-3"
                     >
                         <div className="flex min-h-[620px] flex-col overflow-hidden rounded-3xl border border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800/80 dark:bg-zinc-950">
 
@@ -174,7 +174,7 @@ const ResumeAnalyzer: React.FC = () => {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: 0.2 }}
-                        className="lg:col-span-2"
+                        className="min-w-0 lg:col-span-2"
                     >
                         <div className="flex min-h-[620px] flex-col overflow-hidden rounded-3xl border border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800/80 dark:bg-zinc-950">
 
@@ -201,7 +201,7 @@ const ResumeAnalyzer: React.FC = () => {
                             <div className="flex-1 p-4 sm:p-5">
 
                                 {reviews.length > 0 ? (
-                                    <div className="space-y-3">
+                                    <div className="flex-1 min-w-0 p-4 sm:p-5">
 
                                         {reviews.map((rev, index) => (
                                             <motion.div

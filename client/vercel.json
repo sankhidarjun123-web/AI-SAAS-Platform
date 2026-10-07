@@ -1,28 +1,8 @@
 {
-  "version": 2,
-  "cleanUrls": true,
-  "redirects": [
-    {
-      "source": "/old-about",
-      "destination": "/about",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        }
-      ]
     }
   ]
 }

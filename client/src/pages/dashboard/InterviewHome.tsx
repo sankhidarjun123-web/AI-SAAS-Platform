@@ -189,7 +189,7 @@ const InterviewHome: React.FC = () => {
                     MAIN GRID
                 ====================================================== */}
 
-                <div className="grid gap-6 lg:grid-cols-5">
+                <div className="grid min-w-0 gap-6 lg:grid-cols-5">
 
                     {/* =================================================
                         LEFT: CANDIDATE INFORMATION
@@ -203,7 +203,7 @@ const InterviewHome: React.FC = () => {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: 0.1 }}
-                        className="lg:col-span-3"
+                        className="min-w-0 lg:col-span-3"
                     >
                         <div className="rounded-3xl border border-zinc-200/80 bg-white p-6 shadow-sm md:p-8 dark:border-zinc-800/80 dark:bg-zinc-950">
 
@@ -464,7 +464,7 @@ const InterviewHome: React.FC = () => {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: 0.2 }}
-                        className="lg:col-span-2"
+                        className="min-w-0 lg:col-span-2"
                     >
                         <div className="flex min-h-[620px] flex-col rounded-3xl border border-zinc-200/80 bg-white shadow-sm dark:border-zinc-800/80 dark:bg-zinc-950">
 
