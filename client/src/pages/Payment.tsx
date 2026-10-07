@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import { loadRazorpay } from "../utils/loadRazorpay";
-import { AppIconBig } from "../assets/images";
+import { AppIcon } from "../assets/images";
 import axios from "axios";
 
 interface PaymentProps {
@@ -35,7 +35,7 @@ const Payment = () => {
                 currency,
 
                 order_id: orderId,
-                image: AppIconBig,
+                image: AppIcon,
 
                 name: "Real Mentor AI (Committed)",
                 description: `By doing a payment of ${amount} INR, you are officially becoming committed to features
