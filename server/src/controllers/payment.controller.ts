@@ -72,6 +72,7 @@ export const confirmPayment = async (req: Request, res: Response) => {
         const userId = req.userId;
 
         if (!userId) {
+            console.error("Unauthorized");
             return res.status(401).json({
                 message: "Unauthorized",
                 success: false
@@ -81,6 +82,7 @@ export const confirmPayment = async (req: Request, res: Response) => {
         const { plan, razorpayPaymentId, razorpayOrderId, amount, status, razorpaySignature } = req.body;
 
         if (!plan || !razorpayPaymentId || !razorpayOrderId || !amount || !status) {
+            console.error("Empty fields");
             return res.status(400).json({
                 message: "Missing required fields",
                 success: false
@@ -93,6 +95,7 @@ export const confirmPayment = async (req: Request, res: Response) => {
             .digest("hex");
 
         if (expectedSignature !== razorpaySignature) {
+            console.error("Signature didn't matched");
             return res.status(400).json({
                 success: false,
                 message: "Invalid payment signature"
@@ -100,6 +103,7 @@ export const confirmPayment = async (req: Request, res: Response) => {
         }
 
         if (status !== "paid") {
+            console.error("Payment not successful");
             await pool.query(
                 `
             UPDATE payments SET status = $1 WHERE razorpay_order_id = $2
@@ -140,6 +144,7 @@ export const confirmPayment = async (req: Request, res: Response) => {
         });
 
     } catch (err) {
+        console.error(err);
         res.status(500).json({
             message: "Internal Server Error",
             success: false

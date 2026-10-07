@@ -6,7 +6,7 @@ import type { Request, Response, NextFunction } from 'express';
 const planFeatures: Record<string, string[]> = {
 
     observer: ["chat", "basic_resume"],
-    committed: ["chat", "advanced_resume", "mock_interview", "resume_fix"]
+    committed: ["chat", "advanced_resume", "interview", "resume_fix"]
 }
 
 

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@clerk/clerk-react";
 import { loadRazorpay } from "../utils/loadRazorpay";
 import { AppIconBig } from "../assets/images";
 import axios from "axios";
@@ -15,6 +16,7 @@ const Payment = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
+    const { getToken } = useAuth();
     const { orderId, amount, currency, plan }: PaymentProps = location.state;
 
     useEffect(() => {
@@ -41,18 +43,26 @@ const Payment = () => {
 
                 handler: async (response: any) => {
                     try {
+
+                        const token = await getToken();
+                        if (!token) {
+                            console.error("Clerk token is empty");
+                            return;
+                        }
                         const result = await axios.post(
                             `${import.meta.env.VITE_SERVER_URL}/payment/order/verify`,
                             {
                                 status: "paid",
-                                amount: amount,
+                                amount,
                                 plan: plan || "committed",
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_signature: response.razorpay_signature
+                                razorpayPaymentId: response.razorpay_payment_id,
+                                razorpayOrderId: response.razorpay_order_id,
+                                razorpaySignature: response.razorpay_signature
                             },
                             {
-                                withCredentials: true
+                                headers: {
+                                    Authorization: `Bearer ${token}`
+                                }
                             }
                         );
 
