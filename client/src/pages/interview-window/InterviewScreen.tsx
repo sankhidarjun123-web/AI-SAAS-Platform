@@ -621,14 +621,14 @@ const InterviewScreen = () => {
         <section
             className="
         flex
-        h-full
-        w-full
-        flex-col
-        overflow-hidden
-        bg-[#EEE9DF]
-        text-zinc-900
-        dark:bg-zinc-950
-        dark:text-zinc-100
+    h-full
+    w-full
+    flex-col
+    overflow-hidden
+    bg-[#EEE9DF]
+    text-zinc-900
+    dark:bg-zinc-950
+    dark:text-zinc-100
     "
         >
             {submitting ? (
@@ -811,12 +811,13 @@ const InterviewScreen = () => {
                     <div
                         className="
             grid
-            h-full
-            w-7xl
-            grid-cols-2
-            grid-rows-2
-            gap-3
-            sm:gap-4
+    h-full
+    w-full
+    max-w-7xl
+    grid-cols-2
+    grid-rows-[minmax(0,2fr)_minmax(0,1fr)]
+    gap-3
+    sm:gap-4
         "
                     >
 

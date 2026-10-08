@@ -135,7 +135,7 @@ const InterviewHome: React.FC = () => {
             navigate(`/interview-window/${createdInterview.interviewId}/setup`);
         } catch (err) {
 
-            if(axios.isAxiosError(err) && err.response?.status === 403) {
+            if (axios.isAxiosError(err) && err.response?.status === 403) {
                 navigate("/billing");
             }
             console.error(err);
@@ -453,6 +453,37 @@ const InterviewHome: React.FC = () => {
 
                             </div>
 
+                            {/* =================================================
+                                START INTERVIEW
+                            ================================================== */}
+
+                            <div className="border-t border-zinc-200/70 p-5 dark:border-zinc-800/70">
+
+                                {!selectedResume && (
+                                    <p className="mb-3 text-center text-[11px] text-zinc-400">
+                                        Select a resume to continue
+                                    </p>
+                                )}
+
+                                {selectedResume &&
+                                    !isFormValid && (
+                                        <p className="mb-3 text-center text-[11px] text-amber-500">
+                                            Complete your information before
+                                            starting the interview
+                                        </p>
+                                    )}
+
+                                <button
+                                    disabled={!isFormValid}
+                                    onClick={handleStartInterview}
+                                    className={`w-full cursor-pointer rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-indigo-700 active:scale-[0.98] disabled:cursor-not-allowed ${intLoading && "opacity-40 cursor-not-allowed"} disabled:opacity-40`}
+                                >
+                                    {intLoading ? "Starting..." : "Start Interview"}
+                                    <span className="ml-2">→</span>
+                                </button>
+
+                            </div>
+
                         </div>
                     </motion.div>
 
@@ -628,37 +659,6 @@ const InterviewHome: React.FC = () => {
 
                                     </div>
                                 )}
-
-                            </div>
-
-                            {/* =================================================
-                                START INTERVIEW
-                            ================================================== */}
-
-                            <div className="border-t border-zinc-200/70 p-5 dark:border-zinc-800/70">
-
-                                {!selectedResume && (
-                                    <p className="mb-3 text-center text-[11px] text-zinc-400">
-                                        Select a resume to continue
-                                    </p>
-                                )}
-
-                                {selectedResume &&
-                                    !isFormValid && (
-                                        <p className="mb-3 text-center text-[11px] text-amber-500">
-                                            Complete your information before
-                                            starting the interview
-                                        </p>
-                                    )}
-
-                                <button
-                                    disabled={!isFormValid}
-                                    onClick={handleStartInterview}
-                                    className={`w-full cursor-pointer rounded-xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-indigo-700 active:scale-[0.98] disabled:cursor-not-allowed ${intLoading && "opacity-40 cursor-not-allowed"} disabled:opacity-40`}
-                                >
-                                    {intLoading ? "Starting..." : "Start Interview"}
-                                    <span className="ml-2">→</span>
-                                </button>
 
                             </div>
 
