@@ -401,7 +401,7 @@ const Interview = ({ interview }: InterviewProps) => {
 
                     <Link
 
-                        to={interview.status === "pending" ? `/interview-window/${interview.id}/setup` : `/interview-review/${interview.id}`}
+                        to={interview.status === "created" ? `/interview-window/${interview.id}/setup` : `/interview-review/${interview.id}`}
                         className={`
                             group/button
                             flex
@@ -430,9 +430,9 @@ const Interview = ({ interview }: InterviewProps) => {
                             lg:w-auto
                         `}
                     >
-                        {interview.status === "pending" ? <>Start Interview
+                        {interview.status === "created" ? <>Start Interview
 
-                        (<ArrowRight
+                        <ArrowRight
                             className="
                                 h-4
                                 w-4
@@ -440,7 +440,7 @@ const Interview = ({ interview }: InterviewProps) => {
                                 duration-200
                                 group-hover/button:translate-x-1
                             "
-                        />)</>
+                        /></>
                         : "Review"}
 
                     </Link>

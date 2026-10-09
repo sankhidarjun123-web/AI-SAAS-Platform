@@ -24,7 +24,7 @@ const InterviewList = () => {
         (skip, limit) => [skip, limit]
     );
 
-    const pendingInterviews = interviews.filter((interview) => interview.status === "pending");
+    const pendingInterviews = interviews.filter((interview) => interview.status === "created");
     const completedInterviews = interviews.filter((interview) => interview.status === "completed");
 
     const isInitialLoading = intLoading && interviews.length === 0;
