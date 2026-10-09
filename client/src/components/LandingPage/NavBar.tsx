@@ -5,13 +5,12 @@ import type { RootState } from "../../store/store";
 import { AppIcon, AppIconDark, AppIconBig, AppIconBigDark } from "../../assets/images";
 import LoginBtn from "../commons/LoginBtn";
 import SubscribeBtn from "../commons/SubscribeBtn";
-import UserIcon from "../commons/UserIcon";
+import { UserButton } from "@clerk/clerk-react";
 import { useAccount } from "../../context/AuthContext";
-import { useClerk } from "@clerk/clerk-react";
-import DropDown, { type Options } from "../commons/DropDown";
-import { LayoutDashboard, SunMoon, LogOut, Menu, Settings } from "lucide-react";
+import { LayoutDashboard, SunMoon, Menu, Settings } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toggleTheme } from "../../store/themeSlice";
+import { getUserButtonAppearance } from "../../data/styles";
 
 
 
@@ -23,40 +22,8 @@ const NavBar = ({ isMobile, setMobileMenuOpen, setOpenHistory }: { isMobile: boo
     const mode = useSelector((state: RootState) => state.theme.mode);
     const navigate = useNavigate();
     const location = useLocation();
-    const { signOut } = useClerk();
 
     const dipatch = useDispatch();
-
-    const options: Options[] = [
-        {
-            optionName: "go to dashboard",
-            onClick: () => navigate("/dashboard"),
-            optionIcon: LayoutDashboard,
-            disabled: false,
-            danger: false
-        },
-        {
-            optionName: "toggle theme",
-            onClick: () => dipatch(toggleTheme()),
-            optionIcon: SunMoon,
-            disabled: false,
-            danger: false
-        },
-        {
-            optionName: "settings",
-            onClick: () => navigate("/settings"),
-            optionIcon: Settings,
-            disabled: false,
-            danger: false
-        },
-        {
-            optionName: "sign out",
-            onClick: () => signOut(),
-            optionIcon: LogOut,
-            disabled: false,
-            danger: true
-        },
-    ]
 
     return (
         <nav ref={grandParentRef} className="fixed bg-[#EEE9DF] dark:bg-slate-950 z-50 top-0 left-0 w-full h-16 px-10 flex items-center gap-10">
@@ -114,9 +81,29 @@ const NavBar = ({ isMobile, setMobileMenuOpen, setOpenHistory }: { isMobile: boo
                     state: { backgroundLocation: location }
                 })}><LoginBtn /></div>}
 
-                <DropDown options={options} grandParentRef={grandParentRef}>
-                    <UserIcon />
-                </DropDown>
+                <UserButton appearance={getUserButtonAppearance(mode)}>
+                    <UserButton.MenuItems>
+                        <UserButton.Action
+                            label="Go to dashboard"
+                            labelIcon={<LayoutDashboard size={16} />}
+                            onClick={() => navigate("/dashboard")}
+                        />
+
+                        <UserButton.Action
+                            label="Toggle theme"
+                            labelIcon={<SunMoon size={16} />}
+                            onClick={() => dipatch(toggleTheme())}
+                        />
+
+                        <UserButton.Action
+                            label="Settings"
+                            labelIcon={<Settings size={16} />}
+                            onClick={() => navigate("/settings")}
+                        />
+
+                        <UserButton.Action label="signOut" />
+                    </UserButton.MenuItems>
+                </UserButton>
 
                 {(isMobile && location.pathname.includes("dashboard")) && <button onClick={() => setMobileMenuOpen((prev) => !prev)} className="md:hidden">
                     <Menu size={20} />

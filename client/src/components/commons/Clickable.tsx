@@ -9,14 +9,14 @@ interface ClickableProps {
   size?: number;
   children: React.ReactNode;
   path?: string;
-  color?: string;
+  classAdd?: string;
   onClick?: (event: unknown) => void;
 }
 
 export const Clickable: React.FC<ClickableProps> = ({
   path,
   children,
-  color = "bg-white",
+  classAdd = "bg-white",
   size = 40,
   posLeft = "auto",
   posTop = "auto",
@@ -34,7 +34,7 @@ export const Clickable: React.FC<ClickableProps> = ({
     hover:scale-110
     hover:shadow-xl
     active:scale-95
-    ${color}
+    ${classAdd}
   `;
 
   const style = {
