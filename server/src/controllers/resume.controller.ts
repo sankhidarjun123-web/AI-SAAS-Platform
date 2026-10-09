@@ -336,7 +336,7 @@ export const getAllResumes = async (
         res.status(200).json({
             reviews: reviews,
             nextSkip: SKIP + LIMIT,
-            limitReached: remaining <= SKIP
+            limitReached: remaining <= SKIP + LIMIT
         });
     } catch (err) {
         console.error(err);

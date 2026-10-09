@@ -36,9 +36,9 @@ export const usePaginationFetch = <TData, T extends FetchFunction>(fetchParams: 
         try {
             const response = await fetchFunction(...args(skipRef.current, fetchParams.limit));
             setData(prev => [...prev, ...response[dataVal]]);
-            skipRef.current = response.nextSkip || 0;
+            skipRef.current = response.nextSkip;
             setLimitReached(response.limitReached || response[dataVal].length === 0);
-            console.log(response[dataVal]);
+            console.log(response[dataVal], response.limitReached, response.nextSkip);
         } catch (err) {
             console.error(err);
         } finally {

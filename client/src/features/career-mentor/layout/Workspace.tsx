@@ -10,7 +10,6 @@ import { PromptBox } from "../chat/PromptBox";
 import { Prompt } from "../../../components/Career-Mentor/Prompt";
 import { Reply } from "../../../components/Career-Mentor/Reply";
 
-import { useAuth } from "@clerk/clerk-react";
 import { getConversation } from "../../../api/chat.api";
 import { usePaginationFetch } from "../../../hooks/usePaginationFetch";
 import CommonLoader from "../../../ui/loader/CommonLoader";
@@ -42,8 +41,6 @@ export const Workspace: React.FC<WorkspaceProps> = ({
     currentChat, newMessage, newReply, setNewMessage, setNewReply, hasMessages, setHasMessages
 }) => {
 
-    const { getToken } = useAuth();
-
     const [chatError, setChatError] =
         useState<string | null>(null);
 
@@ -70,7 +67,6 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         "conversationMessages",
         (skip, limit) => [
             currentChat,
-            getToken,
             skip,
             limit,
         ]

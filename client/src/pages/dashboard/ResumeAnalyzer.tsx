@@ -5,7 +5,6 @@ import { PreviousReviews } from "../../components/Dashboard/PreviousReviews";
 import { usePaginationFetch } from "../../hooks/usePaginationFetch";
 import { getAllResumes } from "../../api/resume.api";
 import CommonLoader from "../../ui/loader/CommonLoader";
-import { useAuth } from "@clerk/clerk-react";
 
 interface PastReview {
     reviews: any[];
@@ -16,7 +15,6 @@ interface PastReview {
 const ResumeAnalyzer: React.FC = () => {
     const [deletedReview, setDeletedReview] = useState<boolean[]>([]);
     const loaderRef = useRef<HTMLDivElement | null>(null);
-    const { getToken } = useAuth();
 
     const {
         data: reviews,
@@ -31,7 +29,7 @@ const ResumeAnalyzer: React.FC = () => {
         },
         getAllResumes,
         "reviews",
-        (skip, limit) => [getToken, skip, limit]
+        (skip, limit) => [skip, limit]
     );
 
     useEffect(() => {

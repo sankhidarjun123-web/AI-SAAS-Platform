@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useAuth } from "@clerk/clerk-react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { usePaginationFetch } from "../../hooks/usePaginationFetch";
@@ -57,7 +56,6 @@ const InterviewHome: React.FC = () => {
     const navigate = useNavigate();
     const loaderRef = useRef<HTMLDivElement | null>(null);
     const [intLoading, setIntLoading] = useState<boolean>(false);
-    const { getToken } = useAuth();
 
     const [selectedResume, setSelectedResume] =
         useState<string | null>(null);
@@ -82,7 +80,7 @@ const InterviewHome: React.FC = () => {
         },
         getAllResumes,
         "reviews",
-        (skip, limit) => [getToken, skip, limit]
+        (skip, limit) => [skip, limit]
     );
 
     const getScoreColor = (score?: number) => {

@@ -3,7 +3,6 @@ import { PanelLeft, Search, SquarePen, MessageCircle } from "lucide-react";
 import { getConversations } from "../../../api/chat.api";
 import { usePaginationFetch } from "../../../hooks/usePaginationFetch";
 import { Link } from "react-router-dom";
-import { useAuth } from '@clerk/clerk-react';
 import HistoryItem from '../../../components/Career-Mentor/HistoryItem';
 import CommonLoader from '../../../ui/loader/CommonLoader';
 import { motion } from "framer-motion";
@@ -21,7 +20,6 @@ type Conversation = {
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentChat }) => {
 
-  const { getToken } = useAuth();
   const [expanded, setExpanded] = useState<boolean>(() => {
     const saved = localStorage.getItem("careerMentorSidebar");
 
@@ -30,7 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentChat }) => {
 
   const loaderRef = useRef(null);
 
-  const { data: conversations, loading: conLoading, limitReached } = usePaginationFetch<Conversation, any>({ limit: 10, skip: 0, sort: "asc", divRef: loaderRef }, getConversations, "conversations", (skip, limit) => [getToken, skip, limit]);
+  const { data: conversations, loading: conLoading, limitReached } = usePaginationFetch<Conversation, any>({ limit: 10, skip: 0, sort: "asc", divRef: loaderRef }, getConversations, "conversations", (skip, limit) => [skip, limit]);
 
   useEffect(() => {
     localStorage.setItem(

@@ -415,7 +415,7 @@ export const getInterviews = async (
         res.status(200).json({
             interviews,
             nextSkip: SKIP + LIMIT,
-            limitReached: remaining <= SKIP
+            limitReached: remaining <= SKIP + LIMIT
         });
     } catch (err) {
         console.error(err);

@@ -286,14 +286,13 @@ export const getConversations = async (req: Request, res: Response) => {
         ]);
 
         const total = Number(totalConversations.rows[0].count);
-        const retrieved = totalConversations.rowCount || 0;
 
         res.status(200).json(
             {
                 message: "Success",
                 conversations: conversations.rows,
                 nextSkip: SKIP + LIMIT,
-                limitReached: total <= SKIP + retrieved
+                limitReached: total <= SKIP + LIMIT
             }
         );
     } catch (err) {
