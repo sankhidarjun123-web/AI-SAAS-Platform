@@ -388,7 +388,7 @@ export const getInterviews = async (
     FROM interviews
     WHERE user_id = $1
     AND status NOT IN ('in_progress', 'cancelled')
-    ORDER BY created_at ASC
+    ORDER BY created_at DESC
     LIMIT $2
     OFFSET $3
     `,
